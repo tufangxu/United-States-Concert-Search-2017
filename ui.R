@@ -1,8 +1,11 @@
+
+library(markdown)
 library(httr)
 library(jsonlite)
 library(dplyr)
 library(ggplot2)
 library(shiny)
+
 
 # base.uri.spotify <- "https://api.spotify.com"
 # spotify.search <- "v1/search"
@@ -10,7 +13,7 @@ library(shiny)
 
 
 key.jambase <- "vbtqtqkcmhp5w8bbx4f5999m"
-artist.name <- "chance the rapper" # Need to get this from Spotify 
+artist.name <- "chance the rapper" #get from user input 
 base.uri.jambase <- "http://api.jambase.com"
 resource.artist.jambase <- "/artists"
 uri.artist.jambase <- paste0(base.uri.jambase, resource.artist.jambase)
@@ -28,6 +31,8 @@ response.venue.jambase <- GET(uri.venue.jambase, query = query.venue.jambase)
 body.venue.jambase <- content(response.venue.jambase, "text")
 data.venue.jambase <- fromJSON(body.venue.jambase)
 results.venue.jambase <- data.venue.jambase$Events
+results.venue.jambase <- flatten(results.venue.jambase)
+results.venue.jambase <- filter(results.venue.jambase, Venue.Country == "US" & Venue.CountryCode == "US")
 
 ui <- navbarPage("Concert Listings!",
                  tabPanel("View Concerts",
@@ -36,12 +41,17 @@ ui <- navbarPage("Concert Listings!",
                               textInput(
                                 "search.input",
                                 "Search:"
-                              )
+                              ),
+                              textOutput("zipcode")
                             ),
                             mainPanel(
                               htmlOutput("summary"),
                               plotOutput("map")
                             )
                           )
-                          )
+                          ),
+                 tabPanel("List Concerts",
+                          dataTableOutput("concertlist")),
+                 tabPanel("About", includeMarkdown("ABOUT.md"),
+                          img(src = "jambase140x70.gif", align = "bottom"))
                  )
