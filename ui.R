@@ -3,24 +3,21 @@ library(jsonlite)
 library(dplyr)
 library(ggplot2)
 library(shiny)
-
+ 
 ui <- fluidPage( 
   titlePanel(
     h1('Best Band of 2017'),
     windowTitle = "Find Concerts Near You"
     
   ),
-  sidebarLayout(
+  sidebarLayout( 
     sidebarPanel(
       textInput(
         'search.input',
-        'Find Concerts Nearby:'
+        'Find Concerts Nearby:',
+        value = "Enter A Zip Code"
       ),
-      textInput(
-        'search.artist',
-        'search your artist:'
-      ),
-      selectInput("concert", "Select Your Favorite Concert Information:", choice =  )
+      selectInput("concert", "Select Your Favorite Concert Information:", choice =  c("taylor"))
       
     ), 
     
