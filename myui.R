@@ -30,6 +30,12 @@ body.artist.spotify <- content(response.artist.spotify, "text")
 data.artist.spotify <- fromJSON(body.artist.spotify)
 results.artist.spotify <- data.artist.spotify[["genres"]]
 
+uri.artist.album.spotify <- paste0(uri.artist.spotify, "/albums")
+response.albums.spotify <- GET(uri.artist.album.spotify)
+body.album.spotify <- content(response.albums.spotify, "text")
+data.album.spotify <- fromJSON(body.album.spotify)
+results.album.spotify <- data.album.spotify$items
+
 
 
 
