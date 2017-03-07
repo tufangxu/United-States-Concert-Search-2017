@@ -3,17 +3,17 @@ library(dplyr)
 library(httr)
 library(jsonlite)
 library(knitr)
-
 library(ggplot2)
 
-# base.uri.spotify <- "https://api.spotify.com"
-# spotify.search <- "v1/search"
-# uri.spotify <- paste0(base.uri.spotify, spotify.search)
-
-
+#Jambase Key
 key.jambase <- "27ye9d7m5mpepbejcxzme6pd"
-spotify.jambase <- "79db19b5259746888cc2eb93fdbbdd25"
 
+# Not a key, just an ID/secret, should still be able to obtain information about
+# from spotify without a key though
+# spotify.jambase <- "79db19b5259746888cc2eb93fdbbdd25"
+
+# This section of code will find the ID of a desired artist
+artist.name <- "" # Dummy variable. This variable should grab an artist name from the dataset from jambase
 base.uri.spotify <- "https://api.spotify.com"
 search.spotify <- "/v1/search"
 uri.spotify <- paste0(base.uri.spotify, search.spotify)
@@ -23,6 +23,7 @@ body.spotify <- content(response.spotify, "text")
 data.spotify <- fromJSON(body.spotify)
 results.spotify <- data.spotify$artists$items$id[[1]]
 
+# This section of code will get the genre of an artist
 artist.spotify <- "/v1/artists/"
 uri.artist.spotify <- paste0(base.uri.spotify, artist.spotify, results.spotify)
 response.artist.spotify <- GET(uri.artist.spotify)
@@ -30,6 +31,9 @@ body.artist.spotify <- content(response.artist.spotify, "text")
 data.artist.spotify <- fromJSON(body.artist.spotify)
 results.artist.spotify <- data.artist.spotify[["genres"]]
 
+# This section of code will get the albums of an artist 
+# This part is a bit weird because Spotify may have multiple different IDs
+# for one album so you could end up with multiple of the same album in a dataset
 uri.artist.album.spotify <- paste0(uri.artist.spotify, "/albums")
 response.albums.spotify <- GET(uri.artist.album.spotify)
 body.album.spotify <- content(response.albums.spotify, "text")
@@ -37,12 +41,13 @@ data.album.spotify <- fromJSON(body.album.spotify)
 results.album.spotify <- data.album.spotify$items
 
 
-
-
-artist.name <- "chance the rapper" 
+artist.name <- "chance the rapper" # This variable should be reactive or change
+# dependong on jambase api
 base.uri.jambase <- "http://api.jambase.com"
 resource.artist.jambase <- "/artists"
+
 # Only if we want specific artist
+
 # uri.artist.jambase <- paste0(base.uri.jambase, resource.artist.jambase)
 # query.artist.jambase <- list(name = artist.name, api_key = key.jambase, o = "json")
 # response.artist.jambase <- GET(uri.artist.jambase, query = query.artist.jambase)
@@ -51,11 +56,14 @@ resource.artist.jambase <- "/artists"
 # results.artist.jambase <- data.artist.jambase$Artists
 # results.artist.id.jambase <- results.artist.jambase$Id
 
+
 # Grabs information about event
+# Right now this code will get event data based on zip code
+zip.code <- 98277
 resource.venue.jambase <- "/events"
 uri.venue.jambase <- paste0(base.uri.jambase, resource.venue.jambase)
 # query.venue.jambase <- list(artistID = results.artist.id.jambase, api_key = key.jambase, o = "json")
-query.venue.jambase <- list(zipCode = 98277, api_key = key.jambase , o = "json")
+query.venue.jambase <- list(zipCode = zip.code, api_key = key.jambase , o = "json")
 response.venue.jambase <- GET(uri.venue.jambase, query = query.venue.jambase)
 body.venue.jambase <- content(response.venue.jambase, "text")
 data.venue.jambase <- fromJSON(body.venue.jambase)
