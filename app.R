@@ -1,6 +1,9 @@
-
+library(shiny)
 library(httr)
 library(jsonlite)
+library(V8)
+library(leaflet)
+library(dplyr)
 
 getCurrentLocation <- function() {
   google.key <- "AIzaSyC5I1rQ5lsm_NFBiFWz398ryJYl-eq5p-Y"
@@ -13,9 +16,13 @@ getCurrentLocation <- function() {
   return(location)
 }
 
-
 insertRow <- function(existingDF, newrow, r) {
   existingDF[seq(r+1,nrow(existingDF)+1),] <- existingDF[seq(r,nrow(existingDF)),]
   existingDF[r,] <- newrow
   existingDF
 }
+
+source("ui.r")
+source("server.r")
+
+shinyApp(ui, server)

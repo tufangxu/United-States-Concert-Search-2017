@@ -1,15 +1,5 @@
 
-
-library(shiny)
-library(shinyjs)
-library(V8)
-library(leaflet)
-
 ui <- bootstrapPage(
-
-  includeCSS("Leaflet.markercluster/dist/MarkerCluster.css"),
-  includeCSS("Leaflet.markercluster/dist/MarkerCluster.Default.css"),
-  includeScript("Leaflet.markercluster/dist/leaflet.markercluster.js"),
   
   tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
   
@@ -18,7 +8,10 @@ ui <- bootstrapPage(
     "Choose your map style:",
     list(
       NASAGIBS.ViirsEarthAtNight2012 = providers$NASAGIBS.ViirsEarthAtNight2012,
-      Esri.WorldGrayCanvas = providers$Esri.WorldGrayCanvas
+      Esri.WorldGrayCanvas = providers$Esri.WorldGrayCanvas,
+      CartoDB.Positron = providers$CartoDB.Positron,
+      Hydda.Full = providers$Hydda.Full,
+      Esri.WorldImagery = providers$Esri.WorldImagery
     ),
     selected = providers$Esri.WorldGrayCanvas
   ),
