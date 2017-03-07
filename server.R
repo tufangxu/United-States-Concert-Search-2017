@@ -16,6 +16,15 @@ server <- function(input, output) {
     date <- input$date
   })
   
+  output$downloadData <- downloadHandler(
+    filename = function() { 
+      paste(input$dataset, '.csv', sep='') 
+    },
+    content = function(file) {
+      write.csv(datasetInput(), file)
+    }
+  ) 
+  
   
 }
   
