@@ -12,10 +12,10 @@ server <- function(input, output) {
   })
   
   output$map <- renderLeaflet({
-    testmap <- leaflet(data = results.venue.location) %>% addMarkers(lng = ~Longitude, lat = ~Latitude, popup = ~Address) %>% addTiles()
-    testmap
+    #testmap <- leaflet(data = results.venue.location) %>% addMarkers(lng = ~Longitude, lat = ~Latitude, popup = content) %>% addProviderTiles(providers$OpenStreetMap.France)
+    testmap <- leaflet() %>% addProviderTiles(providers$OpenStreetMap.France)
   })
   
-  output$concertlist <- renderTable(results.venue.jambase)
+  #output$concertlist <- renderTable(results.venue.jambase)
   
 }
