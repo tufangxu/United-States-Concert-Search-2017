@@ -11,10 +11,12 @@ server <- function(input, output) {
     zipcode <- input$search.input
   })
   
-  # make the date range reactive
+  # make the date range reactive in #yyyy-mm-dd format
   date <- reactive({
     date <- input$date
   })
+  
+  
 }
   
 
