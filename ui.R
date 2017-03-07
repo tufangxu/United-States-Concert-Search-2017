@@ -33,6 +33,8 @@ data.venue.jambase <- fromJSON(body.venue.jambase)
 results.venue.jambase <- data.venue.jambase$Events
 results.venue.jambase <- flatten(results.venue.jambase)
 results.venue.jambase <- filter(results.venue.jambase, Venue.Country == "US" & Venue.CountryCode == "US")
+results.venue.location <- select(results.venue.jambase, Venue.Latitude, Venue.Longitude, Venue.Name, Venue.Address, Venue.City, Venue.StateCode)
+colnames(results.venue.location) <- c("Latitude", "Longitude", "Name", "Address", "City", "State")
 
 ui <- navbarPage(strong("Concert Listings!"),
                  tabPanel("View Concerts",

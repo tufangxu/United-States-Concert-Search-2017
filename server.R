@@ -12,7 +12,7 @@ server <- function(input, output) {
   })
   
   output$map <- renderLeaflet({
-    testmap <- leaflet() %>% addMarkers(lng = -117.21192, lat = 32.75369, popup = "Testing") %>% addTiles()
+    testmap <- leaflet(data = results.venue.location) %>% addMarkers(lng = ~Longitude, lat = ~Latitude, popup = ~Address) %>% addTiles()
     testmap
   })
   
