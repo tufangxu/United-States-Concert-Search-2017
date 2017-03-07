@@ -1,8 +1,18 @@
 
 
+library(shiny)
+library(leaflet)
+library(dplyr)
 server <- function(input, output) {
   
-  output$summary <- renderUI({
-    HTML(paste0('<iframe width="100%" height="500" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/search?q=', input$search.input, '&key=AIzaSyCiqFj9PmX3bNs40cqpAXkPmsDHxt9TYoI" allowfullscreen></iframe>'))
+  output$map <- renderLeaflet({
+
+    concert.places <- as.data.frame(list(long = c(-40, - 50, - 70, - 90) , lat = c(30, 10, 40, 50)))
+    concert.places <- insertRow(concert.places, getCurrentLocation(), 1)
+    leaflet(data = concert.places) %>%
+      setView(lng = -100, lat = 35, zoom = 4) %>% 
+      addMarkers(~long, ~lat, label = ~"123", clusterOptions = markerClusterOptions()) %>% 
+      addPolylines(~long, ~lat) %>% 
+      addProviderTiles(input$map.style)
   })
 }
