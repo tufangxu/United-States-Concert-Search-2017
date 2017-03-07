@@ -15,12 +15,13 @@ ui <- fluidPage(
       textInput(
         'search.input',
         'Find Concerts Nearby:',
-        value = "Enter A Zip Code"
+        value = "Enter Artist's Name"
       ),
-      selectInput("concert", "Select Your Favorite Concert Information:", choice = "u")
+      dateRangeInput('date', label = "Concert Date Range:", start = date(),
+                   format = "yyyy-mm-dd", startview = "month", weekstart = 0,
+                     language = "en", separator = " to ")
       
-    ), 
-    
+    ),
     mainPanel(
       htmlOutput("summary"),
       plotOutput("map"),
@@ -28,3 +29,4 @@ ui <- fluidPage(
     )
   )
 )
+
