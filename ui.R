@@ -3,8 +3,8 @@ library(markdown)
 library(httr)
 library(jsonlite)
 library(dplyr)
-library(ggplot2)
 library(shiny)
+library(leaflet)
 
 
 # base.uri.spotify <- "https://api.spotify.com"
@@ -12,7 +12,7 @@ library(shiny)
 # uri.spotify <- paste0(base.uri.spotify, spotify.search)
 
 
-key.jambase <- "vbtqtqkcmhp5w8bbx4f5999m"
+key.jambase <- "27ye9d7m5mpepbejcxzme6pd"
 artist.name <- "chance the rapper" #get from user input 
 base.uri.jambase <- "http://api.jambase.com"
 resource.artist.jambase <- "/artists"
@@ -34,7 +34,7 @@ results.venue.jambase <- data.venue.jambase$Events
 results.venue.jambase <- flatten(results.venue.jambase)
 results.venue.jambase <- filter(results.venue.jambase, Venue.Country == "US" & Venue.CountryCode == "US")
 
-ui <- navbarPage("Concert Listings!",
+ui <- navbarPage(strong("Concert Listings!"),
                  tabPanel("View Concerts",
                           sidebarLayout(
                             sidebarPanel(
@@ -45,8 +45,9 @@ ui <- navbarPage("Concert Listings!",
                               textOutput("zipcode")
                             ),
                             mainPanel(
-                              htmlOutput("summary"),
-                              plotOutput("map")
+                              #htmlOutput("summary")
+                              leafletOutput("map")
+                              
                             )
                           )
                           ),
