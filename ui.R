@@ -4,27 +4,30 @@ library(dplyr)
 library(ggplot2)
 library(shiny)
 
-ui <- fluidPage(
+ui <- fluidPage( 
   titlePanel(
-    h1('123'),
-    windowTitle = "123"
+    h1('Best Band of 2017'),
+    windowTitle = "Find Concerts Near You"
+    
   ),
   sidebarLayout(
     sidebarPanel(
       textInput(
         'search.input',
-        'Search:'
-      )
+        'Find Concerts Nearby:'
+      ),
+      textInput(
+        'search.artist',
+        'search your artist:'
+      ),
+      selectInput("concert", "Select Your Favorite Concert Information:", choice =  )
+      
     ), 
     
     mainPanel(
       htmlOutput("summary"),
-      plotOutput("map")
+      plotOutput("map"),
+      tableOutput("table")
     )
   )
 )
-source("ui.R")
-source("server.R")
-
-shinyApp(ui = ui, server = server)
-
