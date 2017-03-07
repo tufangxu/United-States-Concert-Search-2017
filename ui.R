@@ -17,7 +17,7 @@ ui <- fluidPage(
         'Find Concerts Nearby:',
         value = "Enter A Zip Code"
       ),
-      selectInput("concert", "Select Your Favorite Concert Information:", choice =  c("taylor"))
+      selectInput("concert", "Select Your Favorite Concert Information:", choice = "u")
       
     ), 
     
