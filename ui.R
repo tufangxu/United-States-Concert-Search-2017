@@ -25,8 +25,13 @@ results.artist.id.jambase <- results.artist.jambase$Id
 
 resource.venue.jambase <- "/events"
 uri.venue.jambase <- paste0(base.uri.jambase, resource.venue.jambase)
-query.venue.jambase <- list(artistID = results.artist.id.jambase, api_key = key.jambase, o = "json")
+# query.venue.jambase <- list(artistID = results.artist.id.jambase, api_key = key.jambase, o = "json")
+query.venue.jambase <- list(zipCode = 98277, api_key = key.jambase , o = "json")
 response.venue.jambase <- GET(uri.venue.jambase, query = query.venue.jambase)
 body.venue.jambase <- content(response.venue.jambase, "text")
 data.venue.jambase <- fromJSON(body.venue.jambase)
-results.venue.jambase <- data.venue.jambase$Events
+results.venue.jambase <- as.data.frame(data.venue.jambase$Events)
+relevant.results.venue.jambase <- results.venue.jambase$Venue
+date.venue.jambase <- results.venue.jambase$Date
+relevant.results.venue.jambase <- mutate(relevant.results.venue.jambase, date = date.venue.jambase)
+us.results.venue.jambase <- relevant.results.venue.jambase %>% filter(Country == "US")
