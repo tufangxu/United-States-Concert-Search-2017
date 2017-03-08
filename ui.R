@@ -37,7 +37,8 @@ ui <- bootstrapPage(
                 
                 textInput(
                 'search.input',
-                'Enter Your Favorite Artist Name'
+                'Enter Your Favorite Artist Name',
+                value = "Justin Bieber"
                 ),
                 actionButton("go", "Go"),
                 
@@ -52,6 +53,7 @@ ui <- bootstrapPage(
                   F
                 ),
                 downloadButton('downloadData', 'Download Concert Information'),
+                
                 
                 h5(id = "words", "Designed by Nathan Magdalera, Shelley Tsui,"),
                 h5(" Tufang Xu, and Zegang Cheng."),

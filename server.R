@@ -30,7 +30,7 @@ keys <- c("27ye9d7m5mpepbejcxzme6pd", "vbtqtqkcmhp5w8bbx4f5999m",
           "8rpgprp9x6zhmg8e4t2rukw6", "6ssgmhmv284qmrqmmqwhxnse")
 
 #Do not use the 5th key, it will be used in shinyapps.io
-key.jamebase <- keys[5]
+key.jamebase <- keys[1]
 # key.jambase <- "8qgdfttz4xd2abmbxqwrswjv" ### DO NOT USE THIS ONE ###
 
 # Not a key, just an ID/secret, should still be able to obtain information about
@@ -115,6 +115,9 @@ server <- function(input, output) {
     
     
     info.concerts <- getVenue(artist)
+    if(info.concerts == "unspecifically name") {
+      return(m)
+    }
     info.concerts[seq(2 ,nrow(info.concerts)+1),] <- info.concerts[seq(1 ,nrow(info.concerts)),]
     info.concerts[1, ] <- NA
     currentLocation <- getCurrentLocation()
