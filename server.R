@@ -20,10 +20,11 @@ library(htmltools)
 
 keys <- c("27ye9d7m5mpepbejcxzme6pd", "vbtqtqkcmhp5w8bbx4f5999m",
           "dfk3af5t35b77s82xwhf3s5s", "z63mttrgw9ef9xrqwyrvxbw8",
-          "8rpgprp9x6zhmg8e4t2rukw6", "6ssgmhmv284qmrqmmqwhxnse")
+          "8rpgprp9x6zhmg8e4t2rukw6", "6ssgmhmv284qmrqmmqwhxnse",
+          "6bnahwpm27pesua7ehycppxh")
 
 #Do not use the 5th key, it will be used in shinyapps.io
-key.jamebase <- keys[1]
+key.jamebase <- keys[7]
 # key.jambase <- "8qgdfttz4xd2abmbxqwrswjv" ### DO NOT USE THIS ONE ###
 
 # Not a key, just an ID/secret, should still be able to obtain information about
