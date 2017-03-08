@@ -15,7 +15,6 @@ server <- function(input, output) {
     }
     
     
-    #info.concerts <- read.csv("infomation.csv")
     info.concerts <- getVenue(artist)
     info.concerts[seq(2 ,nrow(info.concerts)+1),] <- info.concerts[seq(1 ,nrow(info.concerts)),]
     info.concerts[1, ] <- NA
@@ -63,8 +62,7 @@ server <- function(input, output) {
       addAwesomeMarkers(~Longitude, ~Latitude, popup = ~info, label = ~htmlEscape(Name),
                  clusterOptions = markerClusterOptions(), icon = icons)
     })
-  
-  # make the date range reactive in #yyyy-mm-dd format
+
   
   output$downloadData <- downloadHandler(
     filename = "infomation.csv",
