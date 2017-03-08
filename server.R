@@ -12,6 +12,4 @@ server <- function(input, output) {
     testmap
   })
   
-  output$concertlist <- renderTable(results.venue.jambase)
-  
 }

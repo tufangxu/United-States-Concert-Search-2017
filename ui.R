@@ -40,27 +40,14 @@ colnames(results.venue.location) <- c("Latitude", "Longitude", "Name", "Address"
 content <- paste(results.venue.location$Name, results.venue.location$Address, results.venue.location$City, ", ", results.venue.location$State)
 
 ui <- bootstrapPage(
-  tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
-  #strong("Concert Listings!"),
-              #   tabPanel("View Concerts",
-                        #  sidebarLayout(
-                          #  sidebarPanel(
-                          #    textInput(
-                           #     "search.input",
-                          #      "Search:"
-                         #     ),
-                        #      textOutput("artist.name")
-                       #     ),
-                      #      mainPanel(
-                              #htmlOutput("summary")
-                              leafletOutput("map", height = "100%"),
-                     #         
-                    #        )
-                   #       )
-                  #        ),
-                 #tabPanel("List Concerts",
-                 #         dataTableOutput("concertlist")),
-                 #tabPanel("About", includeMarkdown("data/ABOUT.md"),
-                #          img(src = "jambase140x70.gif", align = "bottom")),
-                 theme = "bootstrap.css"
+  tags$style(
+    type = "text/css", "html, body {width:100%;height:100%}"),
+    leafletOutput("map", height = "100%"),
+  absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
+                draggable = F, top = 0, left = "auto", right = "auto", bottom = "auto",
+                width = "auto", height = "auto",
+                
+                textInput("Search", "search.artist")
+                
                  )
+)
