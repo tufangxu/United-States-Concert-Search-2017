@@ -153,13 +153,17 @@ server <- function(input, output) {
       markerColor = info.concerts$color
     )
     
-    leaflet(data = info.concerts, options = leafletOptions(minZoom = 2)) %>%
+    m <- leaflet(data = info.concerts, options = leafletOptions(minZoom = 2)) %>%
       setView(lng = -100, lat = 37, zoom = 5) %>% 
-      setMaxBounds(-180, -180, 180, 180) %>% 
-      addPolylines(~Longitude, ~Latitude, weight = 1, opacity = 1) %>% 
-      addProviderTiles(input$map.style) %>% 
+      setMaxBounds(-180, -180, 180, 180)
+      
+    if(input$timeline) {
+      m <- addPolylines(m, ~Longitude, ~Latitude, weight = 1, opacity = 1) 
+    }
+      m <- addProviderTiles(m, input$map.style) %>% 
       addAwesomeMarkers(~Longitude, ~Latitude, popup = ~info, label = ~htmlEscape(Name),
                  clusterOptions = markerClusterOptions(), icon = icons)
+      return(m)
     })
 
   

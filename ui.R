@@ -46,6 +46,11 @@ ui <- bootstrapPage(
                                start = Sys.Date(), end = Sys.Date() + 365
                 ),
                 
+                checkboxInput(
+                  'timeline',
+                  'Show the time line',
+                  F
+                ),
                 downloadButton('downloadData', 'Download Concert Information'),
                 
                 h5(id = "words", "Designed by Nathan Magdalera, Shelley Tsui,"),
