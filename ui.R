@@ -1,3 +1,11 @@
+library(shiny)
+library(httr)
+library(jsonlite)
+library(V8)
+library(leaflet)
+library(dplyr)
+library(ggplot2)
+library(htmltools)
 
 ui <- bootstrapPage(
   
