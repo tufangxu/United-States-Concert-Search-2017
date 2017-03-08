@@ -5,15 +5,22 @@ library(jsonlite)
 library(knitr)
 library(ggplot2)
 
+
 server <- function(input, output) {
   # returns the artist name
   search.input <- reactive({
-    zipcode <- input$search.input
+    artist <- input$search.input
   })
   
   # make the date range reactive in #yyyy-mm-dd format
   date <- reactive({
     date <- input$date
+  })
+  
+  
+  # generates filtered dataset
+  output$table <- renderTable({
+    
   })
   
   output$downloadData <- downloadHandler(
