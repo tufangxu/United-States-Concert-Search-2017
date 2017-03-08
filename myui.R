@@ -6,28 +6,28 @@ library(knitr)
 library(ggplot2)
 
 #Jambase Key
-# key1.jambase <- "27ye9d7m5mpepbejcxzme6pd"
- key2.jambase <- "vbtqtqkcmhp5w8bbx4f5999m"
+key1.jambase <- "27ye9d7m5mpepbejcxzme6pd"
+key2.jambase <- "vbtqtqkcmhp5w8bbx4f5999m"
 # key.jambase <- "8qgdfttz4xd2abmbxqwrswjv"
 
 # Not a key, just an ID/secret, should still be able to obtain information about
 # from spotify without a key though
 # spotify.jambase <- "79db19b5259746888cc2eb93fdbbdd25"
 
-artist.name <- "chance the rapper" # This variable should be reactive or change
-# dependong on jambase api
+artist.name <- "Chance the Rapper" # This variable should be reactive or change
+                  # depending on jambase api
 base.uri.jambase <- "http://api.jambase.com"
 resource.artist.jambase <- "/artists"
 
 # Only if we want specific artist
 
-# uri.artist.jambase <- paste0(base.uri.jambase, resource.artist.jambase)
-# query.artist.jambase <- list(name = artist.name, api_key = key1.jambase, o = "json")
-# response.artist.jambase <- GET(uri.artist.jambase, query = query.artist.jambase)
-# body.artist.jambase <- content(response.artist.jambase, "text")
-# data.artist.jambase <- fromJSON(body.artist.jambase)
-# results.artist.jambase <- data.artist.jambase$Artists
-# results.artist.id.jambase <- results.artist.jambase$Id
+uri.artist.jambase <- paste0(base.uri.jambase, resource.artist.jambase)
+query.artist.jambase <- list(name = artist.name, api_key = key1.jambase, o = "json")
+response.artist.jambase <- GET(uri.artist.jambase, query = query.artist.jambase)
+body.artist.jambase <- content(response.artist.jambase, "text")
+data.artist.jambase <- fromJSON(body.artist.jambase)
+results.artist.jambase <- data.artist.jambase$Artists
+results.artist.id.jambase <- results.artist.jambase$Id
 
 
 # Grabs information about event
@@ -35,11 +35,11 @@ resource.artist.jambase <- "/artists"
 ### DO NOT RUN THE CODE BELOW MROE THAN ONCE ###
 ###                                          ###
 
-zip.code <- 98277
+# zip.code <- 98277
 resource.venue.jambase <- "/events"
 uri.venue.jambase <- paste0(base.uri.jambase, resource.venue.jambase)
-# query.venue.jambase <- list(artistID = results.artist.id.jambase, api_key = key.jambase, o = "json")
-query.venue.jambase <- list(zipCode = zip.code, api_key = key2.jambase , o = "json")
+query.venue.jambase <- list(artistID = results.artist.id.jambase, api_key = key2.jambase, o = "json")
+# query.venue.jambase <- list(zipCode = zip.code, api_key = key2.jambase , o = "json")
 response.venue.jambase <- GET(uri.venue.jambase, query = query.venue.jambase)
 body.venue.jambase <- content(response.venue.jambase, "text")
 data.venue.jambase <- fromJSON(body.venue.jambase)
@@ -49,8 +49,11 @@ data.venue.jambase <- fromJSON(body.venue.jambase)
 results.venue.jambase <- as.data.frame(data.venue.jambase$Events)
 relevant.results.venue.jambase <- results.venue.jambase$Venue
 date.venue.jambase <- results.venue.jambase$Date
-relevant.results.venue.jambase <- mutate(relevant.results.venue.jambase, date = date.venue.jambase)
-us.results.venue.jambase <- relevant.results.venue.jambase %>% filter(Country == "US")
+relevant.results.venue.jambase <- mutate(relevant.results.venue.jambase, date = 
+                                         date.venue.jambase)
+us.results.venue.jambase <- relevant.results.venue.jambase %>% filter(Country == "US") %>%
+                            filter(Latitude != 0) %>% filter(Longitude != 0)
+us.results.venue.jambase <- unique(us.results.venue.jambase)
 
 
 
