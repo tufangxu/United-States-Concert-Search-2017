@@ -8,7 +8,7 @@ library(ggplot2)
 #Jambase Key
 key1.jambase <- "27ye9d7m5mpepbejcxzme6pd"
 key2.jambase <- "vbtqtqkcmhp5w8bbx4f5999m"
-# key.jambase <- "8qgdfttz4xd2abmbxqwrswjv"
+# key.jambase <- "8qgdfttz4xd2abmbxqwrswjv" ### DO NOT USE THIS ONE ###
 
 # Not a key, just an ID/secret, should still be able to obtain information about
 # from spotify without a key though
