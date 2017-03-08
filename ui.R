@@ -33,7 +33,10 @@ ui <- bootstrapPage(
                 ),
                 actionButton("go", "Go"),
                 
-                dateRangeInput('date', label = "Concert Date Range:", start = date()),
+                dateRangeInput('dateRange',
+                               label = 'Date range input:',
+                               start = Sys.Date(), end = Sys.Date() + 365
+                ),
                 
                 downloadButton('downloadData', 'Download Concert Information'),
                 

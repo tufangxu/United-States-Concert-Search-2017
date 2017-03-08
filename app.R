@@ -84,7 +84,8 @@ getGenre <- function(artist.name) {
   base.uri.spotify <- "https://api.spotify.com"
   search.spotify <- "/v1/search"
   uri.spotify <- paste0(base.uri.spotify, search.spotify)
-  query.spotify <- list(type = "artist", q = "Kanye West") # q will have to be an interactive ariable # Obtained from Jambase API
+  # q will have to be an interactive ariable # Obtained from Jambase API
+  query.spotify <- list(type = "artist", q = "Kanye West") 
   response.spotify <- GET(uri.spotify, query = query.spotify)
   body.spotify <- content(response.spotify, "text")
   data.spotify <- fromJSON(body.spotify)

@@ -16,32 +16,48 @@ server <- function(input, output) {
     
     info.concerts <- getVenue(artist)
     #info.concerts <- read.csv("infomation.csv")
+    info.concerts <- insertRow(info.concerts, getCurrentLocation(), 1)
 
     if(is.null(info.concerts)) {
       return(m)
     }
     
-    # Time Range Bug
     
-    #info.concerts$date <- as.Date(info.concerts$date)
-    #start.date <- input$date[1] %>% as.character()
-    #end.date <- input$date[2] %>% as.character()
+    info.concerts$date <- as.Date(info.concerts$date)
+    
+    start.date <- input$dateRange[1] %>% as.character() %>% as.Date()
+    end.date <- input$dateRange[2] %>% as.character() %>% as.Date()
     info.concerts <- mutate(info.concerts, info = paste0("Date: ", date,"<br/>",
                                                         "Name: ", Name,"<br/>",
                                                         "Address: ", Address,", ", 
-                                                        City,", ", State)) 
-    #%>% 
-     # filter(date > start.date & date < end.date)
+                                                        City,", ", State)) %>% 
+      filter(is.na(date) | date > start.date & date < end.date)
+    
+    info.concerts[1, "info"] = "Current Location"
+    info.concerts$Name <- as.vector(info.concerts$Name)
+    info.concerts[1, "Name"] = "Current Location"
+    info.concerts$color = "blue"
+    info.concerts[1, "color"] = "red"
+    
+    if(nrow(info.concerts) < 1) {
+      return(m)
+    }
+    
+    icons <- awesomeIcons(
+      icon = 'ios-close',
+      iconColor = 'black',
+      library = 'ion',
+      markerColor = info.concerts$color
+    )
     
     leaflet(data = info.concerts, options = leafletOptions(minZoom = 2)) %>%
       setView(lng = -100, lat = 37, zoom = 5) %>% 
       setMaxBounds(-180, -180, 180, 180) %>% 
-      #addPolylines(~Venue.Longitude, ~Venue.Latitude, weight = 1, opacity = 0.2) %>% 
+      addPolylines(~Longitude, ~Latitude, weight = 1, opacity = 0.5) %>% 
       addProviderTiles(input$map.style) %>% 
-      addMarkers(~Longitude, ~Latitude, popup = ~info, label = ~htmlEscape(Name),
-                 clusterOptions = markerClusterOptions())
+      addAwesomeMarkers(~Longitude, ~Latitude, popup = ~info, label = ~htmlEscape(Name),
+                 clusterOptions = markerClusterOptions(), icon = icons)
     })
-  
   
   # make the date range reactive in #yyyy-mm-dd format
   
