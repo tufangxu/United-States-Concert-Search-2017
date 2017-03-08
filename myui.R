@@ -56,7 +56,6 @@ us.results.venue.jambase <- relevant.results.venue.jambase %>% filter(Country ==
 us.results.venue.jambase <- unique(us.results.venue.jambase)
 
 
-
 # This section of code will find the ID of a desired artist
 artist.name <- "" # Dummy variable. This variable should grab an artist name from the dataset from jambase
 base.uri.spotify <- "https://api.spotify.com"
