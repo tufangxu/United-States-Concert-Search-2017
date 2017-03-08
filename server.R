@@ -2,20 +2,16 @@ library(leaflet)
 
 server <- function(input, output) {
   
-  #output$summary <- renderUI({
-  #  HTML(paste0('<iframe width="100%" height="500" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/search?q=', input$search.input, '&key=AIzaSyCiqFj9PmX3bNs40cqpAXkPmsDHxt9TYoI" allowfullscreen></iframe>'))
-  #})
-  
-  output$zipcode <- renderText({
-    user.zipcode <- input$search.input
-    paste0("Here are some concerts happening within ", user.zipcode, "...")
+  output$artist.name <- renderText({
+    user.artist.name <- input$search.input
+    paste0("Here are some concerts happening for ", user.artist.name, "...")
   })
   
   output$map <- renderLeaflet({
-    #testmap <- leaflet(data = results.venue.location) %>% addMarkers(lng = ~Longitude, lat = ~Latitude, popup = content) %>% addProviderTiles(providers$OpenStreetMap.France)
-    testmap <- leaflet() %>% addProviderTiles(providers$OpenStreetMap.France)
+    testmap <- leaflet(data = results.venue.location) %>% addMarkers(lng = ~Longitude, lat = ~Latitude, popup = content) %>% addProviderTiles(providers$OpenStreetMap.France)
+    testmap
   })
   
-  #output$concertlist <- renderTable(results.venue.jambase)
+  output$concertlist <- renderTable(results.venue.jambase)
   
 }
