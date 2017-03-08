@@ -7,23 +7,16 @@ library(dplyr)
 library(ggplot2)
 library(htmltools)
 
-getCurrentLocation <- function() {
-  google.key <- "AIzaSyC5I1rQ5lsm_NFBiFWz398ryJYl-eq5p-Y"
-  base.uri <- "https://www.googleapis.com/geolocation/v1/geolocate?key="
-  uri <- paste0(base.uri, google.key)
-  response <- POST(uri)
-  body <- fromJSON(content(response, "text"))
-  location <- as.data.frame(body) %>% 
-    select(Longitude = location.lng, Latitude = location.lat)
-  return(location)
-}
-
-insertRow <- function(existingDF, newrow, r) {
-  existingDF[seq(r+1,nrow(existingDF)+1),] <- existingDF[seq(r,nrow(existingDF)),]
-  existingDF[r,] <- newrow
-  existingDF
-}
-
+#getCurrentLocation <- function() {
+#  google.key <- "AIzaSyC5I1rQ5lsm_NFBiFWz398ryJYl-eq5p-Y"
+#  base.uri <- "https://www.googleapis.com/geolocation/v1/geolocate?key="
+#  uri <- paste0(base.uri, google.key)
+#  response <- POST(uri)
+#  body <- fromJSON(content(response, "text"))
+#  location <- as.data.frame(body) %>% 
+#    select(Longitude = location.lng, Latitude = location.lat)
+#  return(location)
+#}
 
 keys <- c("27ye9d7m5mpepbejcxzme6pd", "vbtqtqkcmhp5w8bbx4f5999m",
           "dfk3af5t35b77s82xwhf3s5s", "z63mttrgw9ef9xrqwyrvxbw8",
@@ -118,11 +111,15 @@ server <- function(input, output) {
     if(info.concerts == "unspecifically name") {
       return(m)
     }
-    info.concerts[seq(2 ,nrow(info.concerts)+1),] <- info.concerts[seq(1 ,nrow(info.concerts)),]
-    info.concerts[1, ] <- NA
-    currentLocation <- getCurrentLocation()
-    info.concerts[1, "Latitude"] <- currentLocation[1, "Latitude"]
-    info.concerts[1, "Longitude"] <- currentLocation[1, "Longitude"]
+    
+    #get current location
+    #problem: cannot use when hosting on a server
+    
+    #info.concerts[seq(2 ,nrow(info.concerts)+1),] <- info.concerts[seq(1 ,nrow(info.concerts)),]
+    #info.concerts[1, ] <- NA
+    #currentLocation <- getCurrentLocation()
+    #info.concerts[1, "Latitude"] <- currentLocation[1, "Latitude"]
+    #info.concerts[1, "Longitude"] <- currentLocation[1, "Longitude"]
   
     if(is.null(info.concerts)) {
       return(m)
