@@ -14,16 +14,21 @@ server <- function(input, output) {
       return(m)
     }
     
-    info.concerts <- getVenue(artist)
+    
     #info.concerts <- read.csv("infomation.csv")
-    info.concerts <- insertRow(info.concerts, getCurrentLocation(), 1)
-
+    info.concerts <- getVenue(artist)
+    info.concerts[seq(2 ,nrow(info.concerts)+1),] <- info.concerts[seq(1 ,nrow(info.concerts)),]
+    info.concerts[1, ] <- NA
+    currentLocation <- getCurrentLocation()
+    info.concerts[1, "Latitude"] <- currentLocation[1, "Latitude"]
+    info.concerts[1, "Longitude"] <- currentLocation[1, "Longitude"]
+  
     if(is.null(info.concerts)) {
       return(m)
     }
     
-    
-    info.concerts$date <- as.Date(info.concerts$date)
+    info.concerts$date <- as.vector(substring(info.concerts$date, 1, 10))
+    info.concerts$date <- as.Date(info.concerts$date, "%Y-%m-%d")
     
     start.date <- input$dateRange[1] %>% as.character() %>% as.Date()
     end.date <- input$dateRange[2] %>% as.character() %>% as.Date()
@@ -53,7 +58,7 @@ server <- function(input, output) {
     leaflet(data = info.concerts, options = leafletOptions(minZoom = 2)) %>%
       setView(lng = -100, lat = 37, zoom = 5) %>% 
       setMaxBounds(-180, -180, 180, 180) %>% 
-      addPolylines(~Longitude, ~Latitude, weight = 1, opacity = 0.5) %>% 
+      addPolylines(~Longitude, ~Latitude, weight = 1, opacity = 1) %>% 
       addProviderTiles(input$map.style) %>% 
       addAwesomeMarkers(~Longitude, ~Latitude, popup = ~info, label = ~htmlEscape(Name),
                  clusterOptions = markerClusterOptions(), icon = icons)

@@ -1,5 +1,4 @@
 library(shiny)
-library(markdown)
 library(httr)
 library(jsonlite)
 library(V8)
@@ -15,7 +14,7 @@ getCurrentLocation <- function() {
   response <- POST(uri)
   body <- fromJSON(content(response, "text"))
   location <- as.data.frame(body) %>% 
-    select(long = location.lng, lat = location.lat)
+    select(Longitude = location.lng, Latitude = location.lat)
   return(location)
 }
 
@@ -26,14 +25,10 @@ insertRow <- function(existingDF, newrow, r) {
 }
 
 
-key1.jambase <- "27ye9d7m5mpepbejcxzme6pd"
-key2.jambase <- "vbtqtqkcmhp5w8bbx4f5999m"
-key3.jambase <- "dfk3af5t35b77s82xwhf3s5s"
-key4.jambase <- "z63mttrgw9ef9xrqwyrvxbw8"
-key5.jambase <- "8rpgprp9x6zhmg8e4t2rukw6"
-key6.jambase <- "6ssgmhmv284qmrqmmqwhxnse"
-
-key.jamebase <- key4.jambase
+keys <- c("27ye9d7m5mpepbejcxzme6pd", "vbtqtqkcmhp5w8bbx4f5999m",
+          "dfk3af5t35b77s82xwhf3s5s", "z63mttrgw9ef9xrqwyrvxbw8",
+          "8rpgprp9x6zhmg8e4t2rukw6", "6ssgmhmv284qmrqmmqwhxnse")
+key.jamebase <- keys[6]
 # key.jambase <- "8qgdfttz4xd2abmbxqwrswjv" ### DO NOT USE THIS ONE ###
 
 # Not a key, just an ID/secret, should still be able to obtain information about
@@ -101,8 +96,8 @@ getGenre <- function(artist.name) {
   return(results.artist.spotify)
 }
 
-source("ui.r")
-source("server.r")
+source("ui.R")
+source("server.R")
 
 shinyApp(ui, server)
 
