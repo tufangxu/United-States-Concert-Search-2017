@@ -11,7 +11,7 @@ shinyApp(
     observeEvent(input$show, {
       showModal(modalDialog(
         title = "Important message",
-        "This is an important message!",
+        "",
         easyClose = TRUE
       ))
     })

@@ -22,8 +22,6 @@ ui <- fluidPage(
       dateRangeInput('date', label = "Concert Date Range:", start = date(),
                    format = "yyyy-mm-dd", startview = "month", weekstart = 0,
                      language = "en", separator = " to "),
-      # number of concerts shown on map
-      numericInput('obs', label = 'numbers of concerts you wish to show:',10, min = 0, max = 100),
       downloadButton('downloadData', 'Download Concert Information')
       
       ),
