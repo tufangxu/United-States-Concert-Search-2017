@@ -1,5 +1,4 @@
 
-
 ui <- bootstrapPage(
   
   tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
@@ -12,8 +11,8 @@ ui <- bootstrapPage(
   leafletOutput("map", width = "100%", height = "100%"),
   
   absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
-                draggable = F, top = 0, left = "auto", right = "auto", bottom = "auto",
-                width = "auto", height = "auto", 
+                draggable = F, top = 0, left = "auto", right = 0, bottom = "auto",
+                width = "auto", height = "100%", 
                 
                 selectInput(
                   'map.style',
@@ -26,9 +25,18 @@ ui <- bootstrapPage(
                     Esri.WorldImagery = providers$Esri.WorldImagery
                   ),
                   selected = providers$Esri.WorldGrayCanvas
+                ),
+                
+                textInput(
+                'search.input',
+                'Enter Your Favorite Artist Name',
+                value = "Artist"
+                ),
+                dateRangeInput('date', label = "Concert Date Range:", start = date(),
+                               format = "yyyy-mm-dd", startview = "month", weekstart = 0,
+                                language = "en", separator = " to "),
+                
+                downloadButton('downloadData', 'Download Concert Information')
                 )
-  )
-  
+
 )
-
-

@@ -13,4 +13,32 @@ server <- function(input, output) {
       addProviderTiles(input$map.style) %>% 
       addMarkers(~long, ~lat, clusterOptions = markerClusterOptions())
     })
+  
+  # returns the artist name
+  search.input <- reactive({
+    artist <- input$search.input
+  })
+  
+  # make the date range reactive in #yyyy-mm-dd format
+  date <- reactive({
+    date <- input$date
+  })
+  
+  
+  # generates filtered dataset
+  output$table <- renderTable({
+    
+  })
+  
+  output$downloadData <- downloadHandler(
+    filename = function() { 
+      paste(input$dataset, '.csv', sep='') 
+    },
+    content = function(file) {
+      write.csv(datasetInput(), file)
+    }
+  ) 
+  
 }
+
+
