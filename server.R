@@ -1,4 +1,5 @@
 
+
 server <- function(input, output) {
   
   output$map <- renderLeaflet({
@@ -11,5 +12,5 @@ server <- function(input, output) {
       addPolylines(~long, ~lat, weight = 1, opacity = 0.2) %>% 
       addProviderTiles(input$map.style) %>% 
       addMarkers(~long, ~lat, clusterOptions = markerClusterOptions())
-  })
+    })
 }

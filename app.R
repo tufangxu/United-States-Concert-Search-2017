@@ -1,4 +1,5 @@
 library(shiny)
+library(markdown)
 library(httr)
 library(jsonlite)
 library(V8)
