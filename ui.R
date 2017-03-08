@@ -29,17 +29,13 @@ data.artist.jambase <- fromJSON(body.artist.jambase)
 results.artist.jambase <- data.artist.jambase$Artists
 results.artist.id.jambase <- results.artist.jambase$Id
 
-
 # Grabs information about event
 # Right now this code will get event data based on zip code
 ### DO NOT RUN THE CODE BELOW MROE THAN ONCE ###
 ###                                          ###
-
-# zip.code <- 98277
 resource.venue.jambase <- "/events"
 uri.venue.jambase <- paste0(base.uri.jambase, resource.venue.jambase)
 query.venue.jambase <- list(artistID = results.artist.id.jambase, api_key = key2.jambase, o = "json")
-# query.venue.jambase <- list(zipCode = zip.code, api_key = key2.jambase , o = "json")
 response.venue.jambase <- GET(uri.venue.jambase, query = query.venue.jambase)
 body.venue.jambase <- content(response.venue.jambase, "text")
 data.venue.jambase <- fromJSON(body.venue.jambase)
