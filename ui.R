@@ -13,7 +13,7 @@ ui <- bootstrapPage(
   absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
                 draggable = F, top = 0, left = "auto", right = 0, bottom = "auto",
                 width = "auto", height = "100%", 
-                
+                h1("Best Band of 2017"),
                 selectInput(
                   'map.style',
                   "Choose your map style:",
@@ -29,14 +29,18 @@ ui <- bootstrapPage(
                 
                 textInput(
                 'search.input',
-                'Enter Your Favorite Artist Name',
-                value = "Artist"
+                'Enter Your Favorite Artist Name'
                 ),
-                dateRangeInput('date', label = "Concert Date Range:", start = date(),
-                               format = "yyyy-mm-dd", startview = "month", weekstart = 0,
-                                language = "en", separator = " to "),
+                actionButton("go", "Go"),
                 
-                downloadButton('downloadData', 'Download Concert Information')
+                dateRangeInput('date', label = "Concert Date Range:", start = date()),
+                
+                downloadButton('downloadData', 'Download Concert Information'),
+                
+                h5(id = "words", "Designed by Nathan Magdalera, Shelley Tsui,"),
+                h5(" Tufang Xu, and Zegang Cheng."),
+                h6("University of Washington"),
+                h6("INFO 201, Winter Quarter, 2017")
                 )
 
 )

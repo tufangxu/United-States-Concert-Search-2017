@@ -6,10 +6,13 @@
     /* Fade out while not hovering */
     opacity: 0.65;
     zoom: 0.9;
-    al
     transition: opacity 500ms 1s;
 }
 
 body {
   text-align: center;
+}
+
+#words {
+	padding-top: 100px;
 }
