@@ -6,15 +6,16 @@ library(knitr)
 library(ggplot2)
 
 #Jambase Key
-key1.jambase <- "27ye9d7m5mpepbejcxzme6pd"
-key2.jambase <- "vbtqtqkcmhp5w8bbx4f5999m"
-# key.jambase <- "8qgdfttz4xd2abmbxqwrswjv" ### DO NOT USE THIS ONE ###
+#key1.jambase <- "27ye9d7m5mpepbejcxzme6pd"
+key1.jambase <- "6bnahwpm27pesua7ehycppxh"
+#key2.jambase <- "vbtqtqkcmhp5w8bbx4f5999m"
+ key2.jambase <- "8qgdfttz4xd2abmbxqwrswjv" ### DO NOT USE THIS ONE ###
 
 # Not a key, just an ID/secret, should still be able to obtain information about
 # from spotify without a key though
 # spotify.jambase <- "79db19b5259746888cc2eb93fdbbdd25"
 
-artist.name <- "Chance the Rapper" # This variable should be reactive or change
+artist.name <- "Real in Big Fish" # This variable should be reactive or change
 # depending on jambase api
 base.uri.jambase <- "http://api.jambase.com"
 resource.artist.jambase <- "/artists"
