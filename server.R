@@ -164,7 +164,7 @@ server <- function(input, output) {
       markerColor = info.concerts$color
     )
     
-    # Renders map with desired style
+    # Renders map back to default settings
     m <- leaflet(data = info.concerts, options = leafletOptions(minZoom = 2)) %>%
       setView(lng = -100, lat = 37, zoom = 5) %>% 
       setMaxBounds(-180, -180, 180, 180)
