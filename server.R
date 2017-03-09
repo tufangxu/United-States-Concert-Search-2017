@@ -48,6 +48,7 @@ base.uri.jambase <- "http://api.jambase.com"
 
 # Variable function that gets the artist ID from the jambase API
 getArtistID <- function(artist.name) {
+
   key1.jambase <- sample(keys, 1)
   resource.artist.jambase <- "/artists"
   uri.artist.jambase <- paste0(base.uri.jambase, resource.artist.jambase)
@@ -79,7 +80,7 @@ getVenue <- function(artist.name) {
   relevant.results.venue.jambase <- results.venue.jambase$Venue
   date.venue.jambase <- results.venue.jambase$Date
   relevant.results.venue.jambase <- mutate(relevant.results.venue.jambase, date = 
-                                          date.venue.jambase)
+                                           date.venue.jambase)
   us.results.venue.jambase <- relevant.results.venue.jambase %>% 
                               filter(Country == "US") %>%
                               filter(Latitude != 0) %>% filter(Longitude != 0)
