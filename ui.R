@@ -15,7 +15,7 @@ key1.jambase <- "6bnahwpm27pesua7ehycppxh"
 # from spotify without a key though
 # spotify.jambase <- "79db19b5259746888cc2eb93fdbbdd25"
 
-artist.name <- "Joey Bada$$" # This variable should be reactive or change
+artist.name <- "Rea" # This variable should be reactive or change
 # depending on jambase api
 base.uri.jambase <- "http://api.jambase.com"
 resource.artist.jambase <- "/artists"
