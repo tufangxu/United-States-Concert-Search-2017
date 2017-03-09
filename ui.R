@@ -15,7 +15,7 @@ key1.jambase <- "6bnahwpm27pesua7ehycppxh"
 # from spotify without a key though
 # spotify.jambase <- "79db19b5259746888cc2eb93fdbbdd25"
 
-artist.name <- "Real in Big Fish" # This variable should be reactive or change
+artist.name <- "Joey Bada$$" # This variable should be reactive or change
 # depending on jambase api
 base.uri.jambase <- "http://api.jambase.com"
 resource.artist.jambase <- "/artists"
@@ -28,7 +28,7 @@ response.artist.jambase <- GET(uri.artist.jambase, query = query.artist.jambase)
 body.artist.jambase <- content(response.artist.jambase, "text")
 data.artist.jambase <- fromJSON(body.artist.jambase)
 results.artist.jambase <- data.artist.jambase$Artists
-results.artist.id.jambase <- results.artist.jambase$Id
+results.artist.id.jambase <- results.artist.jambase$Id[[1]]
 
 # Grabs information about event
 # Right now this code will get event data based on zip code
