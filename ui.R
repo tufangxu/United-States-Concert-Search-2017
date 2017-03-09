@@ -1,82 +1,71 @@
 library(shiny)
-library(dplyr)
 library(httr)
 library(jsonlite)
 library(knitr)
+library(V8)
+library(leaflet)
+library(dplyr)
 library(ggplot2)
+library(htmltools)
 
-#Jambase Key
-#key1.jambase <- "27ye9d7m5mpepbejcxzme6pd"
-key1.jambase <- "6bnahwpm27pesua7ehycppxh"
-#key2.jambase <- "vbtqtqkcmhp5w8bbx4f5999m"
- key2.jambase <- "8qgdfttz4xd2abmbxqwrswjv" ### DO NOT USE THIS ONE ###
+# ui representing how the page will look and the contents of the page
+ui <- bootstrapPage(
+  
+  tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
+  
+  includeCSS("Leaflet.markercluster-1.0.3/dist/MarkerCluster.css"),
+  includeCSS("Leaflet.markercluster-1.0.3/dist/MarkerCluster.Default.css"),
+  includeCSS("style.css"),
+  includeScript("Leaflet.markercluster-1.0.3/dist/leaflet.markercluster.js"),
+  
+  # Depicts how map will look on the page
+  leafletOutput("map", width = "100%", height = "100%"),
+  
+  # Determines contents and placing of panel on the page
+  absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
+                draggable = F, top = 0, left = 60, right = "auto", bottom = "auto",
+                width = 275, height = "100%", 
+                h1("Best Band of 2017"),
+                selectInput(
+                  'map.style',
+                  "Choose your map style:",
+                  list(
+                    "Plain Gray" = providers$Esri.WorldGrayCanvas,
+                    "States" = providers$CartoDB.Positron,
+                    "Cities" = providers$Hydda.Full
+                  ),
+                  selected = providers$Esri.WorldGrayCanvas
+                ),
+                
+                textInput(
+                'search.input',
+                'Enter Your Favorite Artist Name',
+                value = ""
+                ),
+                
+                textOutput('results'),
+                h3(" "),
+                # Represents search button
+                actionButton("go", "Search"),
+                
+                # Date range input that goes from the current date to a year later
+                dateRangeInput('dateRange',
+                               label = 'Date range input:',
+                               start = Sys.Date(), end = Sys.Date() + 365
+                ),
 
-# Not a key, just an ID/secret, should still be able to obtain information about
-# from spotify without a key though
-# spotify.jambase <- "79db19b5259746888cc2eb93fdbbdd25"
+                #downloadButton('downloadData', 'Download Concert Information'),
+                
+                # Brief description of people who worked on project
+                h5(id = "words", "Designed by Nathan Magdalera, Shelley Tsui,"),
+                h5(" Tufang Xu, and Zegang Cheng."),
+                h6("University of Washington"),
+                h6("INFO 201, Winter Quarter, 2017"),
+                h3(""),
+                h6("Best Band of 2K17 powered by JamBase"),
+                h6(a("http://developer.jambase.com/", 
+                     href="http://developer.jambase.com/", 
+                     target="_blank"))
+                )
 
-artist.name <- "Rea" # This variable should be reactive or change
-# depending on jambase api
-base.uri.jambase <- "http://api.jambase.com"
-resource.artist.jambase <- "/artists"
-
-# Only if we want specific artist
-
-uri.artist.jambase <- paste0(base.uri.jambase, resource.artist.jambase)
-query.artist.jambase <- list(name = artist.name, api_key = key1.jambase, o = "json")
-response.artist.jambase <- GET(uri.artist.jambase, query = query.artist.jambase)
-body.artist.jambase <- content(response.artist.jambase, "text")
-data.artist.jambase <- fromJSON(body.artist.jambase)
-results.artist.jambase <- data.artist.jambase$Artists
-results.artist.id.jambase <- results.artist.jambase$Id[[1]]
-
-# Grabs information about event
-# Right now this code will get event data based on zip code
-### DO NOT RUN THE CODE BELOW MROE THAN ONCE ###
-###                                          ###
-resource.venue.jambase <- "/events"
-uri.venue.jambase <- paste0(base.uri.jambase, resource.venue.jambase)
-query.venue.jambase <- list(artistID = results.artist.id.jambase, api_key = key2.jambase, o = "json")
-response.venue.jambase <- GET(uri.venue.jambase, query = query.venue.jambase)
-body.venue.jambase <- content(response.venue.jambase, "text")
-data.venue.jambase <- fromJSON(body.venue.jambase)
-###                                             ###
-### DO NO NOT RUN THE CODE ABOVE MORE THAN ONCE ###
-
-results.venue.jambase <- as.data.frame(data.venue.jambase$Events)
-relevant.results.venue.jambase <- results.venue.jambase$Venue
-date.venue.jambase <- results.venue.jambase$Date
-relevant.results.venue.jambase <- mutate(relevant.results.venue.jambase, date = 
-                                           date.venue.jambase)
-us.results.venue.jambase <- relevant.results.venue.jambase %>% filter(Country == "US") %>%
-  filter(Latitude != 0) %>% filter(Longitude != 0)
-us.results.venue.jambase <- unique(us.results.venue.jambase)
-
-
-# This section of code will find the ID of a desired artist
-artist.name <- "" # Dummy variable. This variable should grab an artist name from the dataset from jambase
-base.uri.spotify <- "https://api.spotify.com"
-search.spotify <- "/v1/search"
-uri.spotify <- paste0(base.uri.spotify, search.spotify)
-query.spotify <- list(type = "artist", q = "Kanye West") # q will have to be an interactive ariable # Obtained from Jambase API
-response.spotify <- GET(uri.spotify, query = query.spotify)
-body.spotify <- content(response.spotify, "text")
-data.spotify <- fromJSON(body.spotify)
-results.spotify <- data.spotify$artists$items$id[[1]]
-
-# This section of code will get the genre of an artist
-artist.spotify <- "/v1/artists/"
-uri.artist.spotify <- paste0(base.uri.spotify, artist.spotify, results.spotify)
-response.artist.spotify <- GET(uri.artist.spotify)
-body.artist.spotify <- content(response.artist.spotify, "text")
-data.artist.spotify <- fromJSON(body.artist.spotify)
-results.artist.spotify <- data.artist.spotify[["genres"]]
-
-# This section of code will get the albums of an artist 
-# This part is a bit weird because Spotify may have multiple different IDs
-# for one album so you could end up with multiple of the same album in a dataset
-uri.artist.album.spotify <- paste0(uri.artist.spotify, "/albums")
-response.albums.spotify <- GET(uri.artist.album.spotify)
-body.album.spotify <- content(response.albums.spotify, "text")
-data.album.spotify <- fromJSON(body.album.spotify)
-results.album.spotify <- data.album.spotify$items
+)

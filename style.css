@@ -1,0 +1,17 @@
+
+#controls {
+  background-color: white;
+    padding: 0 20px 20px 20px;
+    cursor: move;
+    /* Fade out while not hovering */
+    opacity: 0.7;
+    zoom: 0.9
+}
+
+body {
+  text-align: center;
+}
+
+#words {
+	padding-top: 100px;
+}
