@@ -56,7 +56,7 @@ getArtistID <- function(artist.name) {
   body.artist.jambase <- content(response.artist.jambase, "text")
   data.artist.jambase <- fromJSON(body.artist.jambase)
   results.artist.jambase <- data.artist.jambase$Artists
-  results.artist.id.jambase <- results.artist.jambase$Id
+  results.artist.id.jambase <- results.artist.jambase$Id[[1]]
   return(results.artist.id.jambase)
 }
 
