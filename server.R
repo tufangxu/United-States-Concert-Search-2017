@@ -74,7 +74,7 @@ getVenue <- function(artist.name) {
   
   # Returns null if there are no events happening
   if(nrow(results.venue.jambase) == 0) {
-    return(NULL)
+    return("NULL")
   }
   
   relevant.results.venue.jambase <- results.venue.jambase$Venue
@@ -129,7 +129,7 @@ server <- function(input, output) {
     
     
     info.concerts <- getVenue(artist)
-    if(info.concerts == "unspecifically name") {
+    if(info.concerts == "unspecifically name" | info.concerts == "NULL") {
       return(m)
     }
     
