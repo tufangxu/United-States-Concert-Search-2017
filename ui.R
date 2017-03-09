@@ -38,8 +38,11 @@ ui <- bootstrapPage(
                 textInput(
                 'search.input',
                 'Enter Your Favorite Artist Name',
-                value = "Justin Bieber"
+                value = ""
                 ),
+                h3(""),
+                textOutput('results'),
+                h3(""),
                 actionButton("go", "Go"),
                 
                 dateRangeInput('dateRange',

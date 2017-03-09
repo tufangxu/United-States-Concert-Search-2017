@@ -48,7 +48,6 @@ base.uri.jambase <- "http://api.jambase.com"
 
 # Variable function that gets the artist ID from the jambase API
 getArtistID <- function(artist.name) {
-
   key1.jambase <- sample(keys, 1)
   resource.artist.jambase <- "/artists"
   uri.artist.jambase <- paste0(base.uri.jambase, resource.artist.jambase)
@@ -132,16 +131,7 @@ server <- function(input, output) {
     if(info.concerts == "unspecifically name" | info.concerts == "NULL") {
       return(m)
     }
-    
-    #get current location
-    #problem: cannot use when hosting on a server
-    
-    #info.concerts[seq(2 ,nrow(info.concerts)+1),] <- info.concerts[seq(1 ,nrow(info.concerts)),]
-    #info.concerts[1, ] <- NA
-    #currentLocation <- getCurrentLocation()
-    #info.concerts[1, "Latitude"] <- currentLocation[1, "Latitude"]
-    #info.concerts[1, "Longitude"] <- currentLocation[1, "Longitude"]
-  
+
     if(is.null(info.concerts)) {
       return(m)
     }
@@ -157,11 +147,11 @@ server <- function(input, output) {
                                                         City,", ", State)) %>% 
       filter(is.na(date) | date > start.date & date < end.date)
     
-    info.concerts[1, "info"] = "Current Location"
+    #info.concerts[1, "info"] = "Current Location"
     info.concerts$Name <- as.vector(info.concerts$Name)
-    info.concerts[1, "Name"] = "Current Location"
+    #info.concerts[1, "Name"] = "Current Location"
     info.concerts$color = "blue"
-    info.concerts[1, "color"] = "red"
+    info.concerts[1, "color"] = "blue"
     
     if(nrow(info.concerts) < 1) {
       return(m)
@@ -189,7 +179,9 @@ server <- function(input, output) {
 
   
   output$downloadData <- downloadHandler(
-    filename = "infomation.csv",
+    filename = function() {
+      "infomation.csv"
+    },
     content = function(file) {
       write.csv(info.concerts, file)
     }
