@@ -7,17 +7,6 @@ library(dplyr)
 library(ggplot2)
 library(htmltools)
 
-#getCurrentLocation <- function() {
-#  google.key <- "AIzaSyC5I1rQ5lsm_NFBiFWz398ryJYl-eq5p-Y"
-#  base.uri <- "https://www.googleapis.com/geolocation/v1/geolocate?key="
-#  uri <- paste0(base.uri, google.key)
-#  response <- POST(uri)
-#  body <- fromJSON(content(response, "text"))
-#  location <- as.data.frame(body) %>% 
-#    select(Longitude = location.lng, Latitude = location.lat)
-#  return(location)
-#}
-
 # Variable representing a vector of API keys
 keys <- c("88erjhqbwn7jn8qmutp2j33m", "vbtqtqkcmhp5w8bbx4f5999m",
           "dfk3af5t35b77s82xwhf3s5s", "z63mttrgw9ef9xrqwyrvxbw8",
@@ -37,38 +26,47 @@ keys2 <- c("27ye9d7m5mpepbejcxzme6pd", "wnkk6hgmqqc94cp9w6kswawq",
            "2sc8ruvsdxcny3st7cnjn6mu", "sk6xdqchyhzgmzqdyygn9dv3",
            "mscunr5afsew9j77v4n8ackj", "2yp75kvb8c2z35k2uawc5mtv")
 
-#Do not use the 5th key, it will be used in shinyapps.io
-# key1.jambase <- keys[9]
-# key2.jambase <- keys2[1]
-# key.jambase <- "8qgdfttz4xd2abmbxqwrswjv" ### DO NOT USE THIS ONE ###
-
-
-# 
+# Variable representing base URI for API usage
 base.uri.jambase <- "http://api.jambase.com"
 
-# Variable function that gets the artist ID from the jambase API
+# Variable function that gets the artist ID from the jambase API and returns it to wherever it is called
 getArtistID <- function(artist.name) {
-  key1.jambase <- sample(keys, 1)
+  key1.jambase <- sample(keys, 1) # Gets a random key from API vector
   resource.artist.jambase <- "/artists"
   uri.artist.jambase <- paste0(base.uri.jambase, resource.artist.jambase)
+  
+  # Query to be used for artists search
   query.artist.jambase <- list(name = artist.name, api_key = key1.jambase, o = "json")
   response.artist.jambase <- GET(uri.artist.jambase, query = query.artist.jambase)
   body.artist.jambase <- content(response.artist.jambase, "text")
   data.artist.jambase <- fromJSON(body.artist.jambase)
   results.artist.jambase <- data.artist.jambase$Artists
+  
+  # Selects first appearing result from dataframe
   results.artist.id.jambase <- results.artist.jambase$Id[[1]]
   return(results.artist.id.jambase)
 }
 
 # Variable function that gets the events that the artist will have
 getVenue <- function(artist.name) {
-  key2.jambase <- sample(keys2, 1)
+  key2.jambase <- sample(keys2, 1) # Gets a random key from API vector
+  
+  # Calls getArtistID function to get the ID of desired artist
   results.artist.id.jambase <- getArtistID(artist.name)
   resource.venue.jambase <- "/events"
   uri.venue.jambase <- paste0(base.uri.jambase, resource.venue.jambase)
+  
+  # Query to search through events 
   query.venue.jambase <- list(artistID = results.artist.id.jambase, api_key = key2.jambase, o = "json")
+  
+  if (is.null(query.venue.jambase$artistID)) {
+    return("NULL")
+  }
+  
   response.venue.jambase <- GET(uri.venue.jambase, query = query.venue.jambase)
   data.venue.jambase <- fromJSON(content(response.venue.jambase, "text"))
+  
+  # Dataframe of results
   results.venue.jambase <- as.data.frame(data.venue.jambase$Events)
   
   # Returns null if there are no events happening
@@ -80,83 +78,71 @@ getVenue <- function(artist.name) {
   date.venue.jambase <- results.venue.jambase$Date
   relevant.results.venue.jambase <- mutate(relevant.results.venue.jambase, date = 
                                            date.venue.jambase)
+  
+  # Variable that filters out lat and long coords that are 0 and any locations not within the US
   us.results.venue.jambase <- relevant.results.venue.jambase %>% 
                               filter(Country == "US") %>%
-                              filter(Latitude != 0) %>% filter(Longitude != 0)
+                              filter(Latitude != 0) %>% filter(Longitude != 0) 
+  
   us.results.venue.jambase <- unique(us.results.venue.jambase)
   return(us.results.venue.jambase)
 }
 
-
-# Variable that gets the genre of an artist
-getGenre <- function(artist.name) {
-  # This section of code will find the ID of a desired artist
-  base.uri.spotify <- "https://api.spotify.com"
-  search.spotify <- "/v1/search"
-  uri.spotify <- paste0(base.uri.spotify, search.spotify)
-  # q will have to be an interactive ariable # Obtained from Jambase API
-  query.spotify <- list(type = "artist", q = "Kanye West") 
-  response.spotify <- GET(uri.spotify, query = query.spotify)
-  body.spotify <- content(response.spotify, "text")
-  data.spotify <- fromJSON(body.spotify)
-  results.spotify <- data.spotify$artists$items$id[[1]]
-  
-  # This section of code will get the genre of an artist
-  artist.spotify <- "/v1/artists/"
-  uri.artist.spotify <- paste0(base.uri.spotify, artist.spotify, results.spotify)
-  response.artist.spotify <- GET(uri.artist.spotify)
-  body.artist.spotify <- content(response.artist.spotify, "text")
-  data.artist.spotify <- fromJSON(body.artist.spotify)
-  results.artist.spotify <- data.artist.spotify[["genres"]]
-  return(results.artist.spotify)
-}
-
-
 server <- function(input, output) {
   
+  # Renders map with artist locations whenever prompted to
   output$map <- renderLeaflet({
     input$go
     artist <- isolate(input$search.input)
     
+    # Renders map with desired style
     m <- leaflet(options = leafletOptions(minZoom = 2)) %>%
           setView(lng = -100, lat = 37, zoom = 5) %>% 
           setMaxBounds(-180, -180, 180, 180) %>% 
           addProviderTiles(input$map.style)
+    
+    # If artist doesn't exist, map defaults to regular settings.
     if(artist == "" | is.na(artist) | is.null(artist)) {
       return(m)
     }
     
-    
+    # Variable representing dataframe obtained from artist
     info.concerts <- getVenue(artist)
-    if(info.concerts == "unspecifically name" | info.concerts == "NULL") {
+    
+    # Defaults to default settings if concert doesn't exist or artist doesn't exist
+    if(info.concerts == "unspecifically name" | info.concerts == "NULL" | is.null(info.concerts)) {
       return(m)
     }
 
-    if(is.null(info.concerts)) {
-      return(m)
-    }
-    
+    # Variable representing concert data as a number
     info.concerts$date <- as.vector(substring(info.concerts$date, 1, 10))
+    
+    # Variable that changes representaive order of date
     info.concerts$date <- as.Date(info.concerts$date, "%Y-%m-%d")
     
+    # Variable representing start date
     start.date <- input$dateRange[1] %>% as.character() %>% as.Date()
+    
+    # Variable representing end date
     end.date <- input$dateRange[2] %>% as.character() %>% as.Date()
+    
+    # Variable that adds a new column of data representing information about the concert
     info.concerts <- mutate(info.concerts, info = paste0("Date: ", date,"<br/>",
                                                         "Name: ", Name,"<br/>",
                                                         "Address: ", Address,", ", 
                                                         City,", ", State)) %>% 
-      filter(is.na(date) | date > start.date & date < end.date)
+                     filter(is.na(date) | date > start.date & date < end.date)
     
-    #info.concerts[1, "info"] = "Current Location"
     info.concerts$Name <- as.vector(info.concerts$Name)
-    #info.concerts[1, "Name"] = "Current Location"
     info.concerts$color = "blue"
     info.concerts[1, "color"] = "blue"
     
+    # Defaults to regular map settings if info.concerts dataframe has less than 1 row
     if(nrow(info.concerts) < 1) {
       return(m)
     }
     
+    # Variable representing icon/image to be used for locations
     icons <- awesomeIcons(
       icon = 'ios-close',
       iconColor = 'black',
@@ -164,28 +150,27 @@ server <- function(input, output) {
       markerColor = info.concerts$color
     )
     
+    # Renders map with desired style
     m <- leaflet(data = info.concerts, options = leafletOptions(minZoom = 2)) %>%
       setView(lng = -100, lat = 37, zoom = 5) %>% 
       setMaxBounds(-180, -180, 180, 180)
-      
-    #if(input$timeline) {
-    #  m <- addPolylines(m, ~Longitude, ~Latitude, weight = 1, opacity = 1) 
-    #}
-      m <- addProviderTiles(m, input$map.style) %>% 
-      addAwesomeMarkers(~Longitude, ~Latitude, popup = ~info, label = ~htmlEscape(Name),
-                 clusterOptions = markerClusterOptions(), icon = icons)
+    
+    # Renders map with desired style and renders every icon
+    m <- addProviderTiles(m, input$map.style) %>% 
+    addAwesomeMarkers(~Longitude, ~Latitude, popup = ~info, label = ~htmlEscape(Name),
+                      clusterOptions = markerClusterOptions(), icon = icons)
       return(m)
     })
 
   
-  output$downloadData <- downloadHandler(
-    filename = function() {
-      "infomation.csv"
-    },
-    content = function(file) {
-      write.csv(info.concerts, file)
-    }
-  ) 
+  #output$downloadData <- downloadHandler(
+  #  filename = function() {
+  #    "infomation.csv"
+  #  },
+  #  content = function(file) {
+  #    write.csv(info.concerts, file)
+  #  }
+  #) 
   
 }
 
