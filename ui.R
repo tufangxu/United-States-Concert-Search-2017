@@ -1,6 +1,8 @@
+
 library(shiny)
 library(httr)
 library(jsonlite)
+library(knitr)
 library(V8)
 library(leaflet)
 library(dplyr)
@@ -37,11 +39,13 @@ ui <- bootstrapPage(
                 ),
                 
                 textInput(
-                'search.input',
-                'Enter Your Favorite Artist Name',
-                value = ""
+                  'search.input',
+                  'Enter Your Favorite Artist Name',
+                  value = ""
                 ),
                 
+                textOutput('results'),
+                h3(" "),
                 # Represents search button
                 actionButton("go", "Search"),
                 
@@ -50,7 +54,7 @@ ui <- bootstrapPage(
                                label = 'Date range input:',
                                start = Sys.Date(), end = Sys.Date() + 365
                 ),
-
+                
                 #downloadButton('downloadData', 'Download Concert Information'),
                 
                 # Brief description of people who worked on project
@@ -63,6 +67,6 @@ ui <- bootstrapPage(
                 h6(a("http://developer.jambase.com/", 
                      href="http://developer.jambase.com/", 
                      target="_blank"))
-                )
-
+  )
+  
 )

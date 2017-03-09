@@ -16,13 +16,13 @@ keys <- c("88erjhqbwn7jn8qmutp2j33m", "vbtqtqkcmhp5w8bbx4f5999m",
 
 # Variable representing a vector of spare API keys
 keys1 <- c("6kttawrfk64hx4eakd3akw5d", "hwvb4wmft9jkx64m5mcwmz44",
-          "95mxt475k4vzfa7azu2vdfc6", "7vhca48td8q4sbyfgn4m5r3j",
-          "t4pjfp4r6hzx5hwpm2ysffq9", "mvxt9ehjyngwv6g6jhe9vjhg",
-          "ymm7yw65aebbr8xbmcaq3jng", "cqvyku9hmp4s4bpnv3fsv49v")
+           "95mxt475k4vzfa7azu2vdfc6", "7vhca48td8q4sbyfgn4m5r3j",
+           "t4pjfp4r6hzx5hwpm2ysffq9", "mvxt9ehjyngwv6g6jhe9vjhg",
+           "ymm7yw65aebbr8xbmcaq3jng", "cqvyku9hmp4s4bpnv3fsv49v")
 
 # Variable representing a vector of spare API keys
 keys2 <- c("27ye9d7m5mpepbejcxzme6pd", "wnkk6hgmqqc94cp9w6kswawq",
-            "7spn9c4evr25hg3armxdgxzm", "h2mf82ty853atrzuxrq4qqh3",
+           "7spn9c4evr25hg3armxdgxzm", "h2mf82ty853atrzuxrq4qqh3",
            "2sc8ruvsdxcny3st7cnjn6mu", "sk6xdqchyhzgmzqdyygn9dv3",
            "mscunr5afsew9j77v4n8ackj", "2yp75kvb8c2z35k2uawc5mtv")
 
@@ -77,12 +77,12 @@ getVenue <- function(artist.name) {
   relevant.results.venue.jambase <- results.venue.jambase$Venue
   date.venue.jambase <- results.venue.jambase$Date
   relevant.results.venue.jambase <- mutate(relevant.results.venue.jambase, date = 
-                                           date.venue.jambase)
+                                             date.venue.jambase)
   
   # Variable that filters out lat and long coords that are 0 and any locations not within the US
   us.results.venue.jambase <- relevant.results.venue.jambase %>% 
-                              filter(Country == "US") %>%
-                              filter(Latitude != 0) %>% filter(Longitude != 0) 
+    filter(Country == "US") %>%
+    filter(Latitude != 0) %>% filter(Longitude != 0) 
   
   us.results.venue.jambase <- unique(us.results.venue.jambase)
   return(us.results.venue.jambase)
@@ -97,23 +97,27 @@ server <- function(input, output) {
     
     # Renders map with desired style
     m <- leaflet(options = leafletOptions(minZoom = 2)) %>%
-          setView(lng = -100, lat = 37, zoom = 5) %>% 
-          setMaxBounds(-180, -180, 180, 180) %>% 
-          addProviderTiles(input$map.style)
+      setView(lng = -100, lat = 37, zoom = 5) %>% 
+      setMaxBounds(-180, -180, 180, 180) %>% 
+      addProviderTiles(input$map.style)
     
     # If artist doesn't exist, map defaults to regular settings.
     if(artist == "" | is.na(artist) | is.null(artist)) {
       return(m)
     }
     
+    
     # Variable representing dataframe obtained from artist
     info.concerts <- getVenue(artist)
     
     # Defaults to default settings if concert doesn't exist or artist doesn't exist
     if(info.concerts == "unspecifically name" | info.concerts == "NULL" | is.null(info.concerts)) {
+      output$results <- renderText({
+        return("Artist doesn't exist or no events or no events in given dates")
+      })
       return(m)
     }
-
+    
     # Variable representing concert data as a number
     info.concerts$date <- as.vector(substring(info.concerts$date, 1, 10))
     
@@ -126,18 +130,28 @@ server <- function(input, output) {
     # Variable representing end date
     end.date <- input$dateRange[2] %>% as.character() %>% as.Date()
     
+    
     # Variable that adds a new column of data representing information about the concert
     info.concerts <- mutate(info.concerts, info = paste0("Date: ", date,"<br/>",
-                                                        "Name: ", Name,"<br/>",
-                                                        "Address: ", Address,", ", 
-                                                        City,", ", State)) %>% 
-                     filter(is.na(date) | date > start.date & date < end.date)
+                                                         "Name: ", Name,"<br/>",
+                                                         "Address: ", Address,", ", 
+                                                         City,", ", State)) %>% 
+      filter(is.na(date) | date > start.date & date < end.date)
+    
+    # If there are no dates in between the date range selected from input, returns to default map
+    if (nrow(info.concerts) < 1) {
+      output$results <- renderText({
+        return("Artist doesn't exist or no current events or no events in given dates")
+      })
+      return(m)
+    }  
     
     info.concerts$Name <- as.vector(info.concerts$Name)
     info.concerts$color = "blue"
     info.concerts[1, "color"] = "blue"
     
-    # Defaults to regular map settings if info.concerts dataframe has less than 1 row
+    # Checks again to see if there is dataframe is smaller than 1 row, and defaults
+    # to regular map settings if so.
     if(nrow(info.concerts) < 1) {
       return(m)
     }
@@ -155,23 +169,22 @@ server <- function(input, output) {
       setView(lng = -100, lat = 37, zoom = 5) %>% 
       setMaxBounds(-180, -180, 180, 180)
     
+    # Returns empty string if search worked fine
+    output$results <- renderText({
+      return(" ")
+    })
+    
     # Renders map with desired style and renders every icon
     m <- addProviderTiles(m, input$map.style) %>% 
-    addAwesomeMarkers(~Longitude, ~Latitude, popup = ~info, label = ~htmlEscape(Name),
-                      clusterOptions = markerClusterOptions(), icon = icons)
-      return(m)
-    })
-
+      addAwesomeMarkers(~Longitude, ~Latitude, popup = ~info, label = ~htmlEscape(Name),
+                        clusterOptions = markerClusterOptions(), icon = icons)
+    return(m)
+  })
   
-  #output$downloadData <- downloadHandler(
-  #  filename = function() {
-  #    "infomation.csv"
-  #  },
-  #  content = function(file) {
-  #    write.csv(info.concerts, file)
-  #  }
-  #) 
+  # Returns the initial text output for initial render
+  output$results <- renderText({
+    return(" ")
+  })
+  
   
 }
-
-
