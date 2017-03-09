@@ -18,28 +18,31 @@ library(htmltools)
 #  return(location)
 #}
 
+# Variable representing a vector of API keys
 keys <- c("27ye9d7m5mpepbejcxzme6pd", "vbtqtqkcmhp5w8bbx4f5999m",
           "dfk3af5t35b77s82xwhf3s5s", "z63mttrgw9ef9xrqwyrvxbw8",
           "8rpgprp9x6zhmg8e4t2rukw6", "6ssgmhmv284qmrqmmqwhxnse",
-          "6bnahwpm27pesua7ehycppxh")
+          "6bnahwpm27pesua7ehycppxh", "7vhca48td8q4sbyfgn4m5r3j",
+          "tx7hr6d2sa972suc6hujkahk")
+
+# Variable representing a vector of spare API keys
+keys2 <- c("6vvc8swhep8mtsvxp7bpjrgr", "wnkk6hgmqqc94cp9w6kswawq",
+            "7spn9c4evr25hg3armxdgxzm", "h2mf82ty853atrzuxrq4qqh3")
 
 #Do not use the 5th key, it will be used in shinyapps.io
-key.jamebase <- keys[7]
+key1.jambase <- keys[9]
+key2.jambase <- keys2[1]
 # key.jambase <- "8qgdfttz4xd2abmbxqwrswjv" ### DO NOT USE THIS ONE ###
 
-# Not a key, just an ID/secret, should still be able to obtain information about
-# from spotify without a key though
-# spotify.jambase <- "79db19b5259746888cc2eb93fdbbdd25"
 
-# depending on jambase api
+# 
 base.uri.jambase <- "http://api.jambase.com"
 
-
-
+# Variable function that gets the artist ID from the jambase API
 getArtistID <- function(artist.name) {
   resource.artist.jambase <- "/artists"
   uri.artist.jambase <- paste0(base.uri.jambase, resource.artist.jambase)
-  query.artist.jambase <- list(name = artist.name, api_key = key.jamebase, o = "json")
+  query.artist.jambase <- list(name = artist.name, api_key = key1.jambase, o = "json")
   response.artist.jambase <- GET(uri.artist.jambase, query = query.artist.jambase)
   body.artist.jambase <- content(response.artist.jambase, "text")
   data.artist.jambase <- fromJSON(body.artist.jambase)
@@ -48,28 +51,34 @@ getArtistID <- function(artist.name) {
   return(results.artist.id.jambase)
 }
 
+# Variable function that gets the events that the artist will have
 getVenue <- function(artist.name) {
   results.artist.id.jambase <- getArtistID(artist.name)
   resource.venue.jambase <- "/events"
   uri.venue.jambase <- paste0(base.uri.jambase, resource.venue.jambase)
-  query.venue.jambase <- list(artistID = results.artist.id.jambase, api_key = key.jamebase, o = "json")
+  query.venue.jambase <- list(artistID = results.artist.id.jambase, api_key = key2.jambase, o = "json")
   response.venue.jambase <- GET(uri.venue.jambase, query = query.venue.jambase)
   data.venue.jambase <- fromJSON(content(response.venue.jambase, "text"))
   results.venue.jambase <- as.data.frame(data.venue.jambase$Events)
+  
+  # Returns null if there are no events happening
   if(nrow(results.venue.jambase) == 0) {
     return(NULL)
   }
+  
   relevant.results.venue.jambase <- results.venue.jambase$Venue
   date.venue.jambase <- results.venue.jambase$Date
   relevant.results.venue.jambase <- mutate(relevant.results.venue.jambase, date = 
-                                             date.venue.jambase)
-  us.results.venue.jambase <- relevant.results.venue.jambase %>% filter(Country == "US") %>%
-    filter(Latitude != 0) %>% filter(Longitude != 0)
+                                          date.venue.jambase)
+  us.results.venue.jambase <- relevant.results.venue.jambase %>% 
+                              filter(Country == "US") %>%
+                              filter(Latitude != 0) %>% filter(Longitude != 0)
   us.results.venue.jambase <- unique(us.results.venue.jambase)
   return(us.results.venue.jambase)
 }
 
 
+# Variable that gets the genre of an artist
 getGenre <- function(artist.name) {
   # This section of code will find the ID of a desired artist
   base.uri.spotify <- "https://api.spotify.com"

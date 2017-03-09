@@ -19,18 +19,18 @@ ui <- bootstrapPage(
   leafletOutput("map", width = "100%", height = "100%"),
   
   absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
-                draggable = F, top = 0, left = "auto", right = 0, bottom = "auto",
-                width = "auto", height = "100%", 
+                draggable = F, top = 0, left = 0, right = "auto", bottom = "auto",
+                width = 300, height = "100%", 
                 h1("Best Band of 2017"),
                 selectInput(
                   'map.style',
                   "Choose your map style:",
                   list(
-                    NASAGIBS.ViirsEarthAtNight2012 = providers$NASAGIBS.ViirsEarthAtNight2012,
-                    Esri.WorldGrayCanvas = providers$Esri.WorldGrayCanvas,
-                    CartoDB.Positron = providers$CartoDB.Positron,
-                    Hydda.Full = providers$Hydda.Full,
-                    Esri.WorldImagery = providers$Esri.WorldImagery
+                    "Night View" = providers$NASAGIBS.ViirsEarthAtNight2012,
+                    "Plain Gray" = providers$Esri.WorldGrayCanvas,
+                    "States" = providers$CartoDB.Positron,
+                    "Cities" = providers$Hydda.Full,
+                    "Earth" = providers$Esri.WorldImagery
                   ),
                   selected = providers$Esri.WorldGrayCanvas
                 ),
