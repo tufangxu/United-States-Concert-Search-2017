@@ -26,11 +26,11 @@ ui <- bootstrapPage(
                   'map.style',
                   "Choose your map style:",
                   list(
-                    "Night View" = providers$NASAGIBS.ViirsEarthAtNight2012,
+                    #"Night View" = providers$NASAGIBS.ViirsEarthAtNight2012,
                     "Plain Gray" = providers$Esri.WorldGrayCanvas,
                     "States" = providers$CartoDB.Positron,
-                    "Cities" = providers$Hydda.Full,
-                    "Earth" = providers$Esri.WorldImagery
+                    "Cities" = providers$Hydda.Full
+                    #"Earth" = providers$Esri.WorldImagery
                   ),
                   selected = providers$Esri.WorldGrayCanvas
                 ),
@@ -47,11 +47,11 @@ ui <- bootstrapPage(
                                start = Sys.Date(), end = Sys.Date() + 365
                 ),
                 
-                checkboxInput(
-                  'timeline',
-                  'Show the time line',
-                  F
-                ),
+                #checkboxInput(
+                #  'timeline',
+                #  'Show the time line',
+                #  F
+                #),
                 downloadButton('downloadData', 'Download Concert Information'),
                 
                 

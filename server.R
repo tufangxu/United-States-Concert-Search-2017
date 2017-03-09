@@ -19,19 +19,27 @@ library(htmltools)
 #}
 
 # Variable representing a vector of API keys
-keys <- c("27ye9d7m5mpepbejcxzme6pd", "vbtqtqkcmhp5w8bbx4f5999m",
+keys <- c("88erjhqbwn7jn8qmutp2j33m", "vbtqtqkcmhp5w8bbx4f5999m",
           "dfk3af5t35b77s82xwhf3s5s", "z63mttrgw9ef9xrqwyrvxbw8",
           "8rpgprp9x6zhmg8e4t2rukw6", "6ssgmhmv284qmrqmmqwhxnse",
           "6bnahwpm27pesua7ehycppxh", "7vhca48td8q4sbyfgn4m5r3j",
-          "tx7hr6d2sa972suc6hujkahk")
+          "tx7hr6d2sa972suc6hujkahk", " n9e4d8n75w3mwq2aegx4qd6z")
 
 # Variable representing a vector of spare API keys
-keys2 <- c("6vvc8swhep8mtsvxp7bpjrgr", "wnkk6hgmqqc94cp9w6kswawq",
-            "7spn9c4evr25hg3armxdgxzm", "h2mf82ty853atrzuxrq4qqh3")
+keys1 <- c("6kttawrfk64hx4eakd3akw5d", "hwvb4wmft9jkx64m5mcwmz44",
+          "95mxt475k4vzfa7azu2vdfc6", "7vhca48td8q4sbyfgn4m5r3j",
+          "t4pjfp4r6hzx5hwpm2ysffq9", "mvxt9ehjyngwv6g6jhe9vjhg",
+          "ymm7yw65aebbr8xbmcaq3jng", "cqvyku9hmp4s4bpnv3fsv49v")
+
+# Variable representing a vector of spare API keys
+keys2 <- c("27ye9d7m5mpepbejcxzme6pd", "wnkk6hgmqqc94cp9w6kswawq",
+            "7spn9c4evr25hg3armxdgxzm", "h2mf82ty853atrzuxrq4qqh3",
+           "2sc8ruvsdxcny3st7cnjn6mu", "sk6xdqchyhzgmzqdyygn9dv3",
+           "mscunr5afsew9j77v4n8ackj", "2yp75kvb8c2z35k2uawc5mtv")
 
 #Do not use the 5th key, it will be used in shinyapps.io
-key1.jambase <- keys[9]
-key2.jambase <- keys2[1]
+# key1.jambase <- keys[9]
+# key2.jambase <- keys2[1]
 # key.jambase <- "8qgdfttz4xd2abmbxqwrswjv" ### DO NOT USE THIS ONE ###
 
 
@@ -40,6 +48,7 @@ base.uri.jambase <- "http://api.jambase.com"
 
 # Variable function that gets the artist ID from the jambase API
 getArtistID <- function(artist.name) {
+  key1.jambase <- sample(keys, 1)
   resource.artist.jambase <- "/artists"
   uri.artist.jambase <- paste0(base.uri.jambase, resource.artist.jambase)
   query.artist.jambase <- list(name = artist.name, api_key = key1.jambase, o = "json")
@@ -53,6 +62,7 @@ getArtistID <- function(artist.name) {
 
 # Variable function that gets the events that the artist will have
 getVenue <- function(artist.name) {
+  key2.jambase <- sample(keys2, 1)
   results.artist.id.jambase <- getArtistID(artist.name)
   resource.venue.jambase <- "/events"
   uri.venue.jambase <- paste0(base.uri.jambase, resource.venue.jambase)
@@ -167,9 +177,9 @@ server <- function(input, output) {
       setView(lng = -100, lat = 37, zoom = 5) %>% 
       setMaxBounds(-180, -180, 180, 180)
       
-    if(input$timeline) {
-      m <- addPolylines(m, ~Longitude, ~Latitude, weight = 1, opacity = 1) 
-    }
+    #if(input$timeline) {
+    #  m <- addPolylines(m, ~Longitude, ~Latitude, weight = 1, opacity = 1) 
+    #}
       m <- addProviderTiles(m, input$map.style) %>% 
       addAwesomeMarkers(~Longitude, ~Latitude, popup = ~info, label = ~htmlEscape(Name),
                  clusterOptions = markerClusterOptions(), icon = icons)
